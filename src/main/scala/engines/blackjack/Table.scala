@@ -1,8 +1,13 @@
 package com.kazino.engines.blackjack
 
+import com.kazino.common.*
+import monocle.syntax.all.*
+
 case class Table(
   dealer: Dealer,
   players: List[Player],
+  gameState: GameState,
+  roundState: RoundState, 
 ): 
 
   lazy val winners: List[Player] = 
@@ -36,4 +41,24 @@ case class Table(
 
   def isPlayerDraw(player: Player): Boolean =
     draws.contains(player)
+
+  def dealToPlayers: Table = 
+    val (playersModified, restOfDeck): (List[Player], Deck) =
+      players.foldLeft((List.empty[Player], dealer.deck)) {
+        case ((receivers, deck), player) =>
+          val (cards, rest) : (Hand, Deck) = deck.deal(2)
+          (receivers :+
+            (player.focus(_.hand).modify(_ ++ cards)
+          ), rest)
+      }
+    this.focus(_.dealer.deck).set(restOfDeck)
+      .focus(_.players).set(playersModified)
+
+  def dealToDealer: Table =
+    this.focus(_.dealer).modify(_.dealToSelf)
+
+  def dealRound =
+    this.focus(_.roundState).set(RoundState.Dealing)
+      .dealToPlayers
+      .dealToDealer
 

@@ -10,6 +10,7 @@ lazy val root = (project in file("."))
     name := "Kazino",
     libraryDependencies ++= Seq(
       zio, zioOptics,
+      monocle, monocleMacro,
 
       zioTest % Test,
       scalaTest % Test
