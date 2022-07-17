@@ -35,6 +35,8 @@ object Deck:
     def deal(numberOfCards: Int): (Hand, Deck) =
       deck.splitAt(numberOfCards)
 
+    def hit: (Card, Deck) = (deck.head, deck.tail)
+
 opaque type Hand = List[Card]
 
 object Hand:
@@ -52,3 +54,11 @@ object Hand:
     def ++ (cards: Hand) : Hand = h ++ cards
 
     def resetHand() : Hand = List()
+
+    def size : Int = h.size
+
+    def first: Card = h.head
+
+    def last: Card = h.last
+
+    def isEmpty : Boolean = h.isEmpty
