@@ -66,3 +66,27 @@ case class Table(
       .dealToPlayers
       .dealToDealer
 
+  def playerTurn = 
+    this.focus(_.roundState).set(RoundState.PlayerTurn)
+
+  def playerDecision(player: Player): Player = 
+    import PlayerDecision._
+    player.decision match
+      case NotPlaying => player
+      case Surrender => player.surrender
+      case Stand => player.stand
+      case DoubleDown =>
+        val (card, rest) = dealer.deck.hit
+        player.doubleDown.focus(_.hand).modify(_ :+ card)
+      case Insurance => player.insurance
+      case Split =>
+        val (twoCards, rest) = dealer.deck.deal(2)
+        player.split
+          .focus(_.hand).modify(_ :+ twoCards.first)
+          .focus(_.splitHand).modify(_ :+ twoCards.last)
+      case Hit => 
+        val (card, rest) = dealer.deck.hit
+        // this.focus(_.dealer.deck).set(rest)
+        //   .focus(_.players).modify(_ :+ playerModified)
+        //   .playerTurn
+        player.focus(_.hand).modify(_ :+ card)

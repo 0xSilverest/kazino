@@ -31,3 +31,9 @@ extension (hand: Hand)
   def < (other: Hand) : Boolean = value < other.value
 
   def == (other: Hand) : Boolean  = value == other.value
+
+  def isSplittable : Boolean =
+    hand.size == 2 && hand.first.rank == hand.last.rank
+
+  def split: (Hand, Hand) =
+    (Hand(hand.first), Hand(hand.last))

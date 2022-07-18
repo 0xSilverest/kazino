@@ -6,7 +6,7 @@ enum RoundState:
 enum GameState:
   case GameStarting, GameOnGoing, GameOver
 
-enum PlayerState:
+enum PlayerDecision:
   // Stand, DoubleDown, Surrender are terminal states
-  case NotPlaying, Split, Hit, Stand,  DoubleDown, Surrender
+  case NotPlaying, Split, Hit, Stand,  DoubleDown, Surrender, Insurance
 
