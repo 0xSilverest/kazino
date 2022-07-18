@@ -5,20 +5,20 @@ import monocle.syntax.all.*
 
 case class Table(
   dealer: Dealer,
-  players: List[Player],
-  gameState: GameState,
-  roundState: RoundState, 
+  players: Set[Player] = Set.empty[Player],
+  gameState: GameState = GameState.GameStarting,
+  roundState: RoundState = RoundState.RoundStarting, 
 ): 
 
-  lazy val winners: List[Player] = 
+  lazy val winners: Set[Player] = 
     if dealer.isBlackjack then
-      List.empty
+      Set.empty
     else if dealer.isBust then
       players.filter(_.isNotBust)
     else
       players.filter(player => player.isNotBust && player.hand.value > dealer.hand.value)
 
-  lazy val losers: List[Player] = 
+  lazy val losers: Set[Player] = 
     if dealer.isBlackjack then
   players.filter(player => player.hand.value < 21 || player.isBust)
     else 
@@ -27,11 +27,17 @@ case class Table(
         (dealer.isNotBust && player.hand.value < dealer.hand.value)
       )
 
-  lazy val draws: List[Player] =
+  lazy val draws: Set[Player] =
     if dealer.isBust then
-      List.empty
+      Set.empty
     else
-      players.filter(player => player.hand.value == dealer.hand.value)
+      players.filter(_.hand.value == dealer.hand.value)
+
+  def add(player: Player): Table =
+    this.focus(_.players).modify(_ + player)
+
+  def remove(player: Player): Table =
+    this.focus(_.players).modify(_ - player)
 
   def isPlayerWinner(player: Player): Boolean = 
     winners.contains(player)
@@ -43,13 +49,11 @@ case class Table(
     draws.contains(player)
 
   def dealToPlayers: Table = 
-    val (playersModified, restOfDeck): (List[Player], Deck) =
-      players.foldLeft((List.empty[Player], dealer.deck)) {
+    val (playersModified, restOfDeck): (Set[Player], Deck) =
+      players.foldLeft((Set.empty[Player], dealer.deck)) {
         case ((receivers, deck), player) =>
           val (cards, rest) : (Hand, Deck) = deck.deal(2)
-          (receivers :+
-            (player.focus(_.hand).modify(_ ++ cards)
-          ), rest)
+          (receivers + player.focus(_.hand).modify(_ ++ cards), rest)
       }
     this.focus(_.dealer.deck).set(restOfDeck)
       .focus(_.players).set(playersModified)

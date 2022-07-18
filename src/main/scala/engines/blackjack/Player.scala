@@ -24,4 +24,3 @@ object Player:
   val bet = GenLens[Player](_.bet)
   val hand = GenLens[Player](_.hand)
   val player = GenLens[Player](_.player)
-

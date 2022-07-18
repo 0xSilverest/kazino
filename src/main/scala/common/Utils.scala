@@ -21,12 +21,12 @@ object Deck:
           .map { r =>
             Card(s, r)
           }
-        }
+        }.shuffle
 
   def apply(numberOfDecks: Int): Deck =
     (1 to numberOfDecks)
       .flatMap(i => Deck())
-      .toList
+      .toList.shuffle
 
   extension (deck: Deck)
     def shuffle: Deck =
@@ -52,3 +52,5 @@ object Hand:
     def ++ (cards: Hand) : Hand = h ++ cards
 
     def resetHand() : Hand = List()
+
+    def size = h.size
