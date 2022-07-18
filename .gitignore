@@ -5,3 +5,4 @@ target/
 .metals/
 /project/**/target/
 /project/**/metals.sbt
+/null/
