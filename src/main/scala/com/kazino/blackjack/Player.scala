@@ -1,8 +1,8 @@
-package com.kazino.engines.blackjack
+package com.kazino.blackjack
 
 import scala.math.BigDecimal
 import com.kazino.common.*
-import monocle.macros.GenLens 
+import monocle.macros.GenLens
 import monocle.syntax.all.*
 
 case class Player (
@@ -14,13 +14,13 @@ case class Player (
   decision: PlayerDecision = PlayerDecision.NotPlaying
 ) :
 
-  lazy val isBust = hand.isBust
+  lazy val isBust: Boolean = hand.isBust
 
-  lazy val isNotBust = !isBust
+  lazy val isNotBust: Boolean = !isBust
 
-  lazy val isBlackjack = hand.isBlackjack
+  lazy val isBlackjack: Boolean = hand.isBlackjack
 
-  def hasSplittable =
+  def hasSplittable: Boolean =
     hand.isSplittable
     && splitHand.isEmpty
     && bet <= balance

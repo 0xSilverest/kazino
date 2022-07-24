@@ -1,4 +1,4 @@
-package com.kazino.engines.blackjack
+package com.kazino.blackjack
 
 enum RoundState:
   case RoundStarting, Dealing, PlayerTurn, DealerTurn, RoundOver

@@ -1,6 +1,8 @@
-package com.kazino.engines.blackjack
+package com.kazino.blackjack
 
 import com.kazino.common.*
+
+import scala.annotation.targetName
 
 extension (card: Card)
   def value: Int =
@@ -22,15 +24,18 @@ extension (card: Card)
 extension (hand: Hand)
   def value: Int = hand.foldLeft(0)(_ + _.value)
 
-  def isBlackjack : Boolean = value == 21 
+  def isBlackjack : Boolean = value == 21
 
   def isBust : Boolean = value > 21
 
-  def > (other: Hand) : Boolean = value > other.value
+  @targetName("superior")
+  def >(other: Hand) : Boolean = value > other.value
 
-  def < (other: Hand) : Boolean = value < other.value
+  @targetName("inferior")
+  def <(other: Hand) : Boolean = value < other.value
 
-  def == (other: Hand) : Boolean  = value == other.value
+  @targetName("equals")
+  def ==(other: Hand) : Boolean  = value == other.value
 
   def isSplittable : Boolean =
     hand.size == 2 && hand.first.rank == hand.last.rank

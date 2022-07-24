@@ -1,4 +1,4 @@
-package com.kazino.engines.blackjack
+package com.kazino.blackjack
 
 import com.kazino.common.*
 import monocle.syntax.all.*
@@ -20,7 +20,7 @@ case class Table(
 
   lazy val losers: Set[Player] = 
     if dealer.isBlackjack then
-  players.filter(player => player.hand.value < 21 || player.isBust)
+      players.filter(player => player.hand.value < 21 || player.isBust)
     else 
       players.filter(player =>
         player.isBust ||
@@ -61,12 +61,12 @@ case class Table(
   def dealToDealer: Table =
     this.focus(_.dealer).modify(_.dealToSelf)
 
-  def dealRound =
+  def dealRound: Table =
     this.focus(_.roundState).set(RoundState.Dealing)
       .dealToPlayers
       .dealToDealer
 
-  def playerTurn = 
+  def playerTurn: Table =
     this.focus(_.roundState).set(RoundState.PlayerTurn)
 
   def playerDecision(player: Player): Player = 
@@ -86,7 +86,4 @@ case class Table(
           .focus(_.splitHand).modify(_ :+ twoCards.last)
       case Hit => 
         val (card, rest) = dealer.deck.hit
-        // this.focus(_.dealer.deck).set(rest)
-        //   .focus(_.players).modify(_ :+ playerModified)
-        //   .playerTurn
         player.focus(_.hand).modify(_ :+ card)
